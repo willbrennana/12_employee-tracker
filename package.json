@@ -1,0 +1,26 @@
+{
+  "name": "12_employee-tracker",
+  "version": "1.0.0",
+  "description": "This is my first challenge using MySQL.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/willbrennana/12_employee-tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/willbrennana/12_employee-tracker/issues"
+  },
+  "homepage": "https://github.com/willbrennana/12_employee-tracker#readme",
+  "dependencies": {
+    "asciiart-logo": "^0.2.6",
+    "console.table": "^0.10.0",
+    "inquirer": "8.2.4",
+    "mysql2": "^2.1.0"
+  }
+}
