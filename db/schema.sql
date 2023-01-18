@@ -4,24 +4,24 @@ CREATE DATABASE employees_db;
 USE employees_db;
 
 CREATE TABLE department (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY_KEY,
-  dept_name VARCHAR(30) UNIQUE NOT NULL,
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  dept_name VARCHAR(30) UNIQUE NOT NULL
 );
 
 CREATE TABLE role (
-  id INT NOT NULL,
+  id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
   title VARCHAR(30) NOT NULL,
-  salary VARCHAR(30) NOT NULL,
-  dept_id INT UNSIGNED NOT NULL,
-  CONSTRAINT fk_dept FOREIGN KEY (dept_id) references department(id) ON DELETE CASCADE,
+  salary DECIMAL NOT NULL,
+  dept_id INT,
+  CONSTRAINT fk_dept FOREIGN KEY (dept_id) references department(id) ON DELETE CASCADE
 );
 
 CREATE TABLE employee (
-  id INT UNSIGNED AUTO_INCREMENT PRIMARY_KEY,
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,
-  role_id INT UNSIGNED NOT NULL,
+  role_id INT,
   CONSTRAINT fk_role FOREIGN KEY (role_id) references role(id) ON DELETE CASCADE,
-  manager_id INT UNSIGNED,
-  CONSTRAINT fk_manager FOREIGN KEY (role_id) references role(id) ON DELETE NOT NULL,
+  manager_id INT,
+  CONSTRAINT fk_manager FOREIGN KEY (manager_id) references employee(id) ON DELETE SET NULL
 );
