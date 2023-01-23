@@ -30,7 +30,7 @@ function anotherOne() {
           { name: "Add a department", value: "ADD DEPARTMENT" },
           { name: "Add a role", value: "ADD ROLE" },
           { name: "Add an employee", value: "ADD EMPLOYEE" },
-          { name: "Update an employee's info", value: "UPDATE EMPLOYEE" },
+          { name: "Update an employee's info", value: "UPDATE EMPLOYEE INFO" },
           { name: "I'm outta here", value: "EXIT" },
         ],
       },
@@ -191,34 +191,46 @@ function addEmployee() {
 }
 
 function updateEmployeeInfo() {
-  db.query("SELECT * FROM employee", function (err, results) {
-    const employees = results.map((employee) => ({
-      name: employee.first_name + " " + employee.last_name,
-      value: employee.id,
-    }));
-    console.log(employees);
-    inquirer
-      .prompt([
-        {
-          type: "list",
-          message: "What's their name'?",
-          name: "first_name" + "last_name",
-          choices: employees,
-        },
-        {
-          message: "What's their new title?",
-          name: "role_id",
-        },
-      ])
-      .then((answer) => {
-        console.log(answer);
-        db.query("INSERT INTO employee SET ?", answer, function (err, results) {
-          console.table(result.affectedRows);
-          console.table("Best of luck on their new venture!");
-          anotherOne();
+  db.query(
+    "SELECT role.id, role.title, employee.id, employee.first_name, employee.last_name FROM role INNER JOIN employee ON role.id = employee.role_id;",
+    function (err, results) {
+      const employees = results.map((employee) => ({
+        name: employee.first_name + " " + employee.last_name,
+        value: employee.id,
+      }));
+      const roles = results.map((role) => ({
+        name: role.title,
+        value: role.id,
+      }));
+      console.log(employees);
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            message: "Whose title would you like to update'?",
+            name: "id",
+            choices: employees,
+          },
+          {
+            type: "list",
+            message: "What's their new title?",
+            name: "role_id",
+            choices: roles,
+          },
+        ])
+        .then((answer) => {
+          console.log(answer);
+          db.query(
+            "INSERT INTO employee SET answer.role_id WHERE id = answer.id",
+            answer,
+            function (err, results) {
+              console.table("Best of luck on their new venture!");
+              anotherOne();
+            }
+          );
         });
-      });
-  });
+    }
+  );
 }
 
 anotherOne();
