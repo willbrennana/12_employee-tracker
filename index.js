@@ -6,16 +6,13 @@ require("dotenv").config();
 const db = mysql.createConnection(
   {
     host: "localhost",
-    // MySQL username,
     user: "root",
-    // MySQL password
     password: process.env.PW,
     database: "employees_db",
   },
   console.log(`Connected to the employee database.`)
 );
 
-// Funciton to loop prompts
 function anotherOne() {
   inquirer
     .prompt([
@@ -64,7 +61,6 @@ function anotherOne() {
     });
 }
 
-// Function to View Departments
 function viewDepartments() {
   db.query("SELECT * FROM department", function (err, results) {
     console.table(results);
@@ -72,7 +68,6 @@ function viewDepartments() {
   });
 }
 
-// Function to View Roles
 function viewRoles() {
   db.query(
     "SELECT role.id, role.title, role.salary, department.dept_name FROM role JOIN department ON role.dept_id = department.id",
@@ -84,7 +79,6 @@ function viewRoles() {
   );
 }
 
-// Function to View Employees
 function viewEmployees() {
   db.query(
     "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.dept_name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.dept_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;",
@@ -95,7 +89,6 @@ function viewEmployees() {
   );
 }
 
-// Function to Add Department
 function addDepartment() {
   inquirer
     .prompt([
@@ -113,7 +106,6 @@ function addDepartment() {
     });
 }
 
-// Function to Add Role
 function addRole() {
   db.query("SELECT * FROM department", function (err, results) {
     const departments = results.map((department) => ({
@@ -148,7 +140,6 @@ function addRole() {
   });
 }
 
-// Function to Add Employee
 function addEmployee() {
   db.query("SELECT * FROM employee", function (err, results) {
     const managers = results.map((manager) => ({
@@ -200,7 +191,6 @@ function addEmployee() {
   });
 }
 
-// Function to Update Employee Info
 function updateEmployeeInfo() {
   db.query("SELECT * FROM employee", function (err, results) {
     const employees = results.map((employee) => ({
