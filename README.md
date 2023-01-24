@@ -26,6 +26,6 @@ On that note, as specified in the Challenge Acceptance Criteria, the note taker 
 
 Below is a screenshot of my latest and greatest:
 
-![](ProjectScreenshot.png goes here)
+![](./ProjectScreenshot.png)
 
-To track, add or update your next employee, click [here](herokuapp.com link goes here).
+To view my video demo, click [here](recording link goes here).

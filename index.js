@@ -202,47 +202,51 @@ function addEmployee() {
 
 // Function to Update Employee Info
 function updateEmployeeInfo() {
-  db.query(
-    "SELECT role.id, role.title, employee.id, employee.first_name, employee.last_name FROM role INNER JOIN employee ON role.id = employee.role_id;",
-    function (err, results) {
-      const employees = results.map((employee) => ({
-        name: employee.first_name + " " + employee.last_name,
-        value: employee.id,
-      }));
+  db.query("SELECT * FROM employee", function (err, results) {
+    const employees = results.map((employee) => ({
+      name: employee.first_name + " " + employee.last_name,
+      value: employee.id,
+    }));
+    db.query("SELECT * FROM role", function (err, results) {
       const roles = results.map((role) => ({
         name: role.title,
         value: role.id,
       }));
-      console.log(employees);
-      inquirer
-        .prompt([
-          {
-            type: "list",
-            message: "Whose title would you like to update'?",
-            name: "id",
-            choices: employees,
-          },
-          {
-            type: "list",
-            message: "What's their new title?",
-            name: "role_id",
-            choices: roles,
-          },
-        ])
-        .then((answer) => {
-          console.log(answer);
-          db.query(
-            "UPDATE employee SET role_id = ? WHERE id = ?",
-            [answer.role_id, answer.id],
-            function (err, results) {
-              console.table(results);
-              console.table("Best of luck on their new venture!");
-              anotherOne();
-            }
-          );
-        });
-    }
-  );
+      db.query("SELECT * FROM employee", function (err, results) {
+        const manager = results.map((manager) => ({
+          name: manager.first_name + " " + manager.last_name,
+          value: manager.id,
+        }));
+        inquirer
+          .prompt([
+            {
+              type: "list",
+              message: "Whose title would you like to update?",
+              name: "id",
+              choices: employees,
+            },
+            {
+              type: "list",
+              message: "What's their new title?",
+              name: "role_id",
+              choices: roles,
+            },
+          ])
+          .then((answer) => {
+            console.log(answer);
+            db.query(
+              "UPDATE employee SET role_id = ? WHERE id = ?",
+              [answer.role_id, answer.id],
+              function (err, results) {
+                console.table(results);
+                console.table("Best of luck on their new venture!");
+                anotherOne();
+              }
+            );
+          });
+      });
+    });
+  });
 }
 
 anotherOne();
