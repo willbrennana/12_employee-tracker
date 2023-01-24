@@ -4,7 +4,9 @@ This is my first challenge using MySQL.
 
 While the process behind creating the database for this tracker took more hours, it was a great way to get more familiar with linking original data to an app using tables in MySQL 2.0 and .sql and .js files with Inquirer and Node.js VS Code.
 
-As specified in the Challenge Acceptance Criteria, the note taker achieves the following:
+The most difficult task was joining tables wiithin the initial and final db.query statements, as the initial attempts to pull the data from each table within the schema.sql file did not display enough info to meet the Acceptance Criteria.
+
+On that note, as specified in the Challenge Acceptance Criteria, the note taker achieves the following:
 
 ✨ The CLI presents the following options: view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role.
 

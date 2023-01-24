@@ -21,17 +21,17 @@ function anotherOne() {
     .prompt([
       {
         type: "list",
-        message: "What are you looking to check out or do?",
+        message: "What are you looking to knock off your to-do list?",
         name: "choice",
         choices: [
-          { name: "All departments", value: "VIEW DEPARTMENTS" },
-          { name: "All roles", value: "VIEW ROLES" },
-          { name: "All employees", value: "VIEW EMPLOYEES" },
+          { name: "View all departments", value: "VIEW DEPARTMENTS" },
+          { name: "View all roles", value: "VIEW ROLES" },
+          { name: "View all employees", value: "VIEW EMPLOYEES" },
           { name: "Add a department", value: "ADD DEPARTMENT" },
           { name: "Add a role", value: "ADD ROLE" },
           { name: "Add an employee", value: "ADD EMPLOYEE" },
-          { name: "Update an employee's info", value: "UPDATE EMPLOYEE INFO" },
-          { name: "I'm outta here", value: "EXIT" },
+          { name: "Update employee info", value: "UPDATE EMPLOYEE INFO" },
+          { name: "I'm all done (for now)", value: "EXIT" },
         ],
       },
     ])
@@ -48,7 +48,6 @@ function anotherOne() {
       }
       if (response.choice === "ADD DEPARTMENT") {
         addDepartment();
-        console.log("I'm in");
       }
       if (response.choice === "ADD ROLE") {
         addRole();
@@ -69,21 +68,31 @@ function anotherOne() {
 function viewDepartments() {
   db.query("SELECT * FROM department", function (err, results) {
     console.table(results);
+    anotherOne();
   });
 }
 
 // Function to View Roles
 function viewRoles() {
-  db.query("SELECT * FROM role", function (err, results) {
-    console.table(results);
-  });
+  db.query(
+    "SELECT role.id, role.title, role.salary, department.dept_name FROM role JOIN department ON role.dept_id = department.id",
+    function (err, results) {
+      console.table(results);
+      console.log(err);
+      anotherOne();
+    }
+  );
 }
 
 // Function to View Employees
 function viewEmployees() {
-  db.query("SELECT * FROM employee", function (err, results) {
-    console.table(results);
-  });
+  db.query(
+    "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.dept_name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.dept_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;",
+    function (err, results) {
+      console.table(results);
+      anotherOne();
+    }
+  );
 }
 
 // Function to Add Department
@@ -139,18 +148,19 @@ function addRole() {
   });
 }
 
+// Function to Add Employee
 function addEmployee() {
   db.query("SELECT * FROM employee", function (err, results) {
     const managers = results.map((manager) => ({
       name: manager.first_name + " " + manager.last_name,
       value: manager.id,
     }));
+    managers.unshift({ name: "None", value: null });
     db.query("SELECT * FROM role", function (err, results) {
       const roles = results.map((role) => ({
         name: role.title,
         value: role.id,
       }));
-      console.log(managers, roles);
       inquirer
         .prompt([
           {
@@ -190,6 +200,7 @@ function addEmployee() {
   });
 }
 
+// Function to Update Employee Info
 function updateEmployeeInfo() {
   db.query(
     "SELECT role.id, role.title, employee.id, employee.first_name, employee.last_name FROM role INNER JOIN employee ON role.id = employee.role_id;",
@@ -221,9 +232,10 @@ function updateEmployeeInfo() {
         .then((answer) => {
           console.log(answer);
           db.query(
-            "INSERT INTO employee SET answer.role_id WHERE id = answer.id",
-            answer,
+            "UPDATE employee SET role_id = ? WHERE id = ?",
+            [answer.role_id, answer.id],
             function (err, results) {
+              console.table(results);
               console.table("Best of luck on their new venture!");
               anotherOne();
             }
