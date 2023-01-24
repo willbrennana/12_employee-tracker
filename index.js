@@ -212,39 +212,33 @@ function updateEmployeeInfo() {
         name: role.title,
         value: role.id,
       }));
-      db.query("SELECT * FROM employee", function (err, results) {
-        const manager = results.map((manager) => ({
-          name: manager.first_name + " " + manager.last_name,
-          value: manager.id,
-        }));
-        inquirer
-          .prompt([
-            {
-              type: "list",
-              message: "Whose title would you like to update?",
-              name: "id",
-              choices: employees,
-            },
-            {
-              type: "list",
-              message: "What's their new title?",
-              name: "role_id",
-              choices: roles,
-            },
-          ])
-          .then((answer) => {
-            console.log(answer);
-            db.query(
-              "UPDATE employee SET role_id = ? WHERE id = ?",
-              [answer.role_id, answer.id],
-              function (err, results) {
-                console.table(results);
-                console.table("Best of luck on their new venture!");
-                anotherOne();
-              }
-            );
-          });
-      });
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            message: "Whose title would you like to update?",
+            name: "id",
+            choices: employees,
+          },
+          {
+            type: "list",
+            message: "What's their new title?",
+            name: "role_id",
+            choices: roles,
+          },
+        ])
+        .then((answer) => {
+          console.log(answer);
+          db.query(
+            "UPDATE employee SET role_id = ? WHERE id = ?",
+            [answer.role_id, answer.id],
+            function (err, results) {
+              console.table(results);
+              console.table("Best of luck on their new venture!");
+              anotherOne();
+            }
+          );
+        });
     });
   });
 }
